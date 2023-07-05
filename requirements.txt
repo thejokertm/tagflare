@@ -1,0 +1,6 @@
+pandas
+oyaml
+colorama
+openai
+python-dotenv
+tqdm
