@@ -102,6 +102,10 @@ def update_tags(directory, uid, new_tags):
 
 # Get tags using OpenAI API (GPT-3)
 def get_tags_from_openai(content, title, all_tags, category, max_new_tags=3, max_total_tags=3, gpt_completion_count=15):
+    
+    with open("tags.json", 'r') as f:
+        all_tags = json.load(f)['tags']
+
     openai.api_key = os.getenv("OPENAI_KEY")
 
     if category == "Visual Fiction":
@@ -172,6 +176,16 @@ def get_tags_from_openai(content, title, all_tags, category, max_new_tags=3, max
     total_tags = existing_tags + new_tags
 
     all_tags = list(set(all_tags))  # Keep only unique tags
+
+    # Extension logic
+    with open("tags.json", 'r') as f:
+        existing_tags = json.load(f)['tags']
+
+    # Extend existing_tags with new_tags
+    all_tags.extend(existing_tags) 
+
+    # Keep only unique tags
+    all_tags = list(set(all_tags))  
 
     with open("tags.json", 'w') as f:
         json.dump({'tags': all_tags}, f)
