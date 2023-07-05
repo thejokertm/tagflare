@@ -112,11 +112,14 @@ def get_tags_from_openai(content, title, all_tags, category, max_new_tags=3, max
     if category == "Visual Fiction":
         # Tell the model to only use tags from the list for 'Visual Fiction' category
         prompt = (
-            f"I need you to identify the primary themes in the following 'Visual Fiction' text. "
+            f"I need you to identify the primary themes in the following text. "
             f"Your goal is to choose thematic keywords that capture the essence of this text. "
             f"These keywords should be from the existing tags list: {', '.join(all_tags)}. "
-            f"Do not invent new keywords. You have to select suitable tags from the given list. Choose exactly 3!\n"
-            f"\nHere's the text you should analyze, respond only with the themes themselves, not other words:\n\n"
+            f"Do not invent new keywords. You have to select suitable tags from the given list.\n"
+            f"Your response should only be these keywords and nothing else. "
+            f"Do not include any sentence structure or leading labels like 'Themes:' before them. "
+            f"You will list the three keywords, each separated by a comma. For example, 'Keyword1, Keyword2, Keyword3'.\n"
+            f"\nHere's the text you should analyze:\n\n"
             f"{content}\n"
         )
     elif category == "Digital Garden":
@@ -154,10 +157,14 @@ def get_tags_from_openai(content, title, all_tags, category, max_new_tags=3, max
     except Exception as e:
         print(f"{Fore.RED}Error occurred while making API call: {e}")
 
-    time.sleep(2)
+    time.sleep(1)
 
     # Get the response from the assistant
     assistant_message = response['choices'][0]['message']['content']
+
+    # Remove any leading "Themes:" or similar from the response
+    if ':' in assistant_message:
+        assistant_message = assistant_message.split(':', 1)[1].strip()
 
     suggested_tags_raw = [tag.strip().rstrip(',') for tag in assistant_message.split(", ")]
 
