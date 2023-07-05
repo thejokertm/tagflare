@@ -1,4 +1,5 @@
 import os
+import sys
 import pandas as pd
 import re
 import oyaml as yaml
@@ -19,6 +20,10 @@ TAGS_FILE = "tags.json"
 
 # Loading markdown files into a Pandas DataFrame
 def load_markdown_files(directory, category_filter):
+    if not os.path.isdir(directory):
+        print(f"{Fore.RED}The directory {directory} does not exist. Please check the path.{Style.RESET_ALL}")
+        sys.exit(1)
+
     md_files = [
         f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f.endswith(".md")
     ]
@@ -221,4 +226,7 @@ def main():
     print(f"{Fore.GREEN}Completed tagging markdown files.{Style.RESET_ALL}")
 
 if __name__ == "__main__":
+    print(f"\n{Fore.CYAN}**********************************")
+    print(f"🏷️ Welcome to TagFlare! 🔥")
+    print(f"**********************************{Style.RESET_ALL}\n")
     main()
