@@ -117,7 +117,7 @@ def get_tags_from_openai(content, title, all_tags, category, max_new_tags=3, max
             f"These keywords should be from the existing tags list: {', '.join(all_tags)}. "
             f"Do not invent new keywords. You have to select suitable tags from the given list.\n"
             f"Your response should only be these keywords and nothing else. "
-            f"Do not include any sentence structure or leading labels like 'Themes:' before them. "
+            f"Do not include any sentence structure or leading labels like 'Themes:' or '1.' before them. "
             f"You will list the three keywords, each separated by a comma. For example, 'Keyword1, Keyword2, Keyword3'.\n"
             f"\nHere's the text you should analyze:\n\n"
             f"{content}\n"
@@ -134,7 +134,10 @@ def get_tags_from_openai(content, title, all_tags, category, max_new_tags=3, max
             f"Your keywords should lean more towards the insightful representation of the content rather than being salesy, "
             f"marketing oriented or vague. Also, while you are free to invent new keywords, "
             f"try to use the existing tags from this list when appropriate: {', '.join(all_tags)}.\n"
-            f"\nHere's the text you should analyze, respond only with the themes themselves, not other words:\n\n"
+            f"Your response should only be these keywords and nothing else. "
+            f"Do not include any sentence structure or leading labels like 'Themes:' or '1.' before them. "
+            f"You will list the three keywords, each separated by a comma. For example, 'Keyword1, Keyword2, Keyword3'.\n"
+            f"\nHere's the text you should analyze:\n\n"
             f"{content}\n"
         )
     else:
@@ -165,6 +168,9 @@ def get_tags_from_openai(content, title, all_tags, category, max_new_tags=3, max
     # Remove any leading "Themes:" or similar from the response
     if ':' in assistant_message:
         assistant_message = assistant_message.split(':', 1)[1].strip()
+
+    # Remove any numeric prefixes ("1. ", "2. ", etc.) from the response
+    assistant_message = re.sub(r'\d+\.\s*', '', assistant_message)
 
     suggested_tags_raw = [tag.strip().rstrip(',') for tag in assistant_message.split(", ")]
 
