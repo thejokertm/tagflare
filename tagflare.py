@@ -209,7 +209,7 @@ def process_files(df_markdown, df_tags, directory):
         else:
             print(f"{Fore.RED}No tags found for the file")
 
-        df_tags = load_tags_from_file(TAGS_FILE)  # Update the DataFrame with updated tags
+    df_tags = load_tags_from_file(TAGS_FILE)  # Update the DataFrame with updated tags
 
 def main():
     print(f"{Fore.GREEN}Loading markdown files...")
